@@ -1,5 +1,7 @@
 "use strict";
 
+
+
 class Position {
     constructor(x, y) {
         this.row = x;
@@ -7,12 +9,12 @@ class Position {
     }
 }
 
-
-function generateRandomPosition() {
-    let x = Math.floor(Math.random() * this.row);
-    let y = Math.floor(Math.random() * this.col);
+function generateRandomPosition(maxCol , maxRow) {
+    let x = Math.floor(Math.random() * maxCol);
+    let y = Math.floor(Math.random() * maxRow);
     return new Position(x, y);
 }
+
 
 
 class Game {
@@ -21,7 +23,7 @@ class Game {
         this.row = row;
         this.col = col;
         this.bombs = bombs;
-        this.board = this.defineBoard();
+        this.defineBoard();
 
     };
 
@@ -45,10 +47,10 @@ class Game {
     setBombs() {
         for (let i = 0; i < this.bombs; i++) {
 
-            let pos = generateRandomPosition();
+            let pos = generateRandomPosition(this.row,this.col);
 
             while (this.ifOccupied(pos)) {
-                pos = generateRandomPosition();
+                pos = generateRandomPosition(this.row,this.col);
             }
             this.board[pos.row][pos.col] = "X";
         }
@@ -108,18 +110,22 @@ class Game {
             }
         }
     }
+
+    print()
+    {
+        let arrText = "";
+        for (let i = 0; i < this.row; i++) {
+            for (let j = 0; j < this.col; j++) {
+                arrText+=this.board[i][j]+ ` `;
+            }
+            console.log(arrText);
+            arrText = ``;
+        }
+    }
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
+let game = new Game(9,9,10);
+game.print();
 
