@@ -23,10 +23,13 @@ class Game {
         this.row = row;
         this.col = col;
         this.bombs = bombs;
+        this.bombsLeft = bombs;
         this.defineBoard();
-
     };
-
+    get bombsLeftInClass()
+    {
+        return this.bombsLeft;
+    }
     defineBoard() {
         this.board = new Array(this.row);
         for (let i = 0; i < this.col; i++) {

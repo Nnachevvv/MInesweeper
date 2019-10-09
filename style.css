@@ -1,0 +1,29 @@
+table{
+    border-collapse: collapse;
+}
+table{
+    background-color : gainsboro;
+}
+
+tr.main-header td {
+    border: none;
+}
+td,tr,th{
+    width : 40px;
+    height: 40px;
+    border : 1px solid grey;
+
+}
+img {
+    border: 1px solid grey;
+    padding: 4px;
+    margin-bottom: -5px;
+    background-color: #c6c6c6;
+}
+
+.show-buttons   {
+    background-color: black;
+    color: red;
+    text-align: right;
+    padding: 5px 5px 5px 20px;;
+}
