@@ -58,15 +58,15 @@ class Game {
 
     checkTopBombs(i, j) {
         let bombs = 0;
-        if (i - 1 > 0 && this.isBombPlanned(i - 1, j)) {
+        if (i - 1 >= 0 && this.isBombPlanned(i - 1, j)) {
             ++bombs;
         }
 
-        if (i - 1 > 0 && j - 1 > 0 && this.isBombPlanned(i - 1, j - 1)) {
+        if (i - 1 >= 0 && j - 1 >= 0 && this.isBombPlanned(i - 1, j - 1)) {
             ++bombs;
         }
 
-        if (i - 1 > 0 && j + 1 < this.col && this.isBombPlanned(i - 1, j + 1)) {
+        if (i - 1 >= 0 && j + 1 < this.col && this.isBombPlanned(i - 1, j + 1)) {
             ++bombs;
         }
         return bombs;
@@ -78,7 +78,7 @@ class Game {
             ++bombs;
         }
 
-        if (i + 1 < this.row && j - 1 > 0 && this.isBombPlanned(i + 1, j - 1)) {
+        if (i + 1 < this.row && j - 1 >= 0 && this.isBombPlanned(i + 1, j - 1)) {
             ++bombs;
         }
 
@@ -91,13 +91,14 @@ class Game {
     checkLeftRightBombs(i, j) {
         let bombs = 0;
 
-        if (j - 1 > 0 && this.isBombPlanned(i, j - 1)) {
+        if (j - 1 >= 0 && this.isBombPlanned(i, j - 1)) {
             ++bombs;
         }
 
-        if (j + 1 > 0 && this.isBombPlanned(i, j + 1)) {
+        if (j + 1 >= 0 && this.isBombPlanned(i, j + 1)) {
             ++bombs;
         }
+
         return bombs;
     }
 
@@ -105,7 +106,7 @@ class Game {
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
                 if (this.board[i][j] !== "X") {
-                    this.board[i][j] = this.checkTopBombs() + this.checkBottomBombs(i, j) + this.checkLeftRightBombs();
+                    this.board[i][j] = this.checkTopBombs(i,j) + this.checkBottomBombs(i, j) + this.checkLeftRightBombs(i,j);
                 }
             }
         }
