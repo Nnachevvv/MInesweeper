@@ -27,3 +27,9 @@ img {
     text-align: right;
     padding: 5px 5px 5px 20px;;
 }
+
+td{
+    //TODO
+    text-align: center;
+    font-size: 14px;
+}

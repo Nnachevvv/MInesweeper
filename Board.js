@@ -134,6 +134,14 @@ class Game {
         }
     }
 
+    showBlock(event , x)
+    {
+            let col =   event.cellIndex;
+            event.innerHTML = this.board[x][col];
+
+    }
+
+
     print()
     {
         let arrText = "";
@@ -151,5 +159,4 @@ class Game {
 
 let game = new Game(9,9,10);
 bombUpdateHtml();
-startTimer();
 
