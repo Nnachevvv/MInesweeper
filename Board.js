@@ -1,5 +1,24 @@
 "use strict";
 
+let startCount = function counter() {
+    let seconds = 0;
+    let el = document.getElementById("timer");
+
+    function incrementSeconds() {
+        seconds += 1;
+        el.innerText = seconds;
+    }
+
+    let cancel = setInterval(incrementSeconds, 1000);
+
+};
+
+function bombUpdateHtml()
+{
+    document.getElementById('bombsLeft').innerText = game.bombsLeft;
+
+}
+
 
 
 class Position {
@@ -131,5 +150,6 @@ class Game {
 
 
 let game = new Game(9,9,10);
-game.print();
+bombUpdateHtml();
+startTimer();
 

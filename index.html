@@ -4,21 +4,22 @@
     <meta charset="UTF-8">
     <link rel = "stylesheet" type="text/css" href="style.css">
     <title>Minesweeper</title>
+
 </head>
 <body>
 
     <table>
 
-        <tbody>
+        <tbody >
         <tr class="main-header">
             <td></td>
-            <td><span class ="show-buttons" >40</span></td>
+            <td><span class ="show-buttons" id = "bombsLeft" >  </span></td>
             <td></td>
             <td></td>
             <td><img src="bored.gif" alt="none"></td>
             <td></td>
             <td></td>
-            <td><span class = "show-buttons">5</span></td>
+            <td><span class = "show-buttons" id = "timer">0</span></td>
             <td></td>
 
         </tr>
@@ -125,6 +126,6 @@
         </tbody>
 
     </table>
-
 </body>
+<script src="Board.js"></script>
 </html>
