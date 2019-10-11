@@ -1,18 +1,31 @@
 "use strict";
 
+class StopWatch {
+    constructor() {
 
-let startCount = function counter() {
-    let seconds = 0;
-    let el = document.getElementById("timer");
+        this.timerStarted = false;
 
-    function incrementSeconds() {
-        seconds += 1;
-        el.innerText = seconds;
     }
 
-    let cancel = setInterval(incrementSeconds, 1000);
+    startTime() {
+        this.timerStarted = true;
+        let seconds = 0;
+        let el = document.getElementById("timer");
+           function  startInterval() {
+            seconds += 1;
+            el.innerHTML = seconds+ " ";
+        }
+        this.cancel = setInterval(startInterval, 1000);
 
-};
+    }
+
+    stopInterval() {
+        this.timerStarted = false;
+         clearInterval(this.cancel);
+    }
+
+}
+
 
 function bombUpdateHtml() {
     document.getElementById('bombsLeft').innerText = game.bombsPositions.size + "";
@@ -42,11 +55,8 @@ class Game {
         this.bombs = bombs;
         this.bombsPositions = new Set([]);
         this.defineBoard();
+        this.stopwatch = new StopWatch();
     };
-
-    get bombsLeftInClass() {
-        return this.bombsPositions.size;
-    }
 
     defineBoard() {
         this.board = new Array(this.row);
@@ -139,7 +149,11 @@ class Game {
         let colClicked = event.cellIndex;
         event.innerHTML = this.board[rowClicked][colClicked];
         if (this.board[rowClicked][colClicked] === "X") {
+            this.stopwatch.stopInterval();
             this.showBombs();
+        } else if (!this.stopwatch.timerStarted) {
+
+            this.stopwatch.startTime();
         }
     }
 
@@ -148,7 +162,7 @@ class Game {
             bomb = bomb.split(" ");
             let row = Number(bomb[0]);
             let col = Number(bomb[1]);
-            let x = document.getElementById("tableId").rows[row+1].cells[col].innerText = this.board[row][col];
+            let x = document.getElementById("tableId").rows[row + 1].cells[col].innerText = this.board[row][col];
         }
     }
 
