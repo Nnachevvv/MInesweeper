@@ -1,5 +1,6 @@
 "use strict";
 
+
 let startCount = function counter() {
     let seconds = 0;
     let el = document.getElementById("timer");
@@ -13,12 +14,10 @@ let startCount = function counter() {
 
 };
 
-function bombUpdateHtml()
-{
-    document.getElementById('bombsLeft').innerText = game.bombsPositions.size +"";
+function bombUpdateHtml() {
+    document.getElementById('bombsLeft').innerText = game.bombsPositions.size + "";
 
 }
-
 
 
 class Position {
@@ -28,12 +27,11 @@ class Position {
     }
 }
 
-function generateRandomPosition(maxCol , maxRow) {
+function generateRandomPosition(maxCol, maxRow) {
     let x = Math.floor(Math.random() * maxCol);
     let y = Math.floor(Math.random() * maxRow);
     return new Position(x, y);
 }
-
 
 
 class Game {
@@ -45,9 +43,11 @@ class Game {
         this.bombsPositions = new Set([]);
         this.defineBoard();
     };
+
     get bombsLeftInClass() {
         return this.bombsPositions.size;
     }
+
     defineBoard() {
         this.board = new Array(this.row);
         for (let i = 0; i < this.col; i++) {
@@ -68,13 +68,13 @@ class Game {
     setBombs() {
         for (let i = 0; i < this.bombs; i++) {
 
-            let pos = generateRandomPosition(this.row,this.col);
+            let pos = generateRandomPosition(this.row, this.col);
 
             while (this.ifOccupied(pos)) {
-                pos = generateRandomPosition(this.row,this.col);
+                pos = generateRandomPosition(this.row, this.col);
             }
             this.board[pos.row][pos.col] = "X";
-            this.bombsPositions.add(pos.row  +" " + pos.col);
+            this.bombsPositions.add(pos.row + " " + pos.col);
         }
     };
 
@@ -128,52 +128,33 @@ class Game {
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
                 if (this.board[i][j] !== "X") {
-                    this.board[i][j] = this.checkTopBombs(i,j) + this.checkBottomBombs(i, j) + this.checkLeftRightBombs(i,j);
+                    this.board[i][j] = this.checkTopBombs(i, j) + this.checkBottomBombs(i, j) + this.checkLeftRightBombs(i, j);
                 }
             }
         }
     }
 
-    showBlock(event , x)
-    {
-            let col =   event.cellIndex;
-            event.innerHTML = this.board[x][col];
-            if(this.board[x][col] === "X"){
-                this.showBombs();
-            }
-    }
-
-
-    showBombs()
-    {
-        for(let bomb of  this.bombsPositions.values())
-        {
-                bomb = bomb.split(" ");
-                let row =   bomb[0];
-                let col = bomb[1];
-                //TODO to make this work;
-                document.getElementById("table").rows[row + 1].cells[col].innerHTML = this.board[row][col];
-
-
-        }
-
-    }
-
-    print()
-    {
-        let arrText = "";
-        for (let i = 0; i < this.row; i++) {
-            for (let j = 0; j < this.col; j++) {
-                arrText+=this.board[i][j]+ ` `;
-            }
-            console.log(arrText);
-            arrText = ``;
+    showBlock(event) {
+        let rowClicked = event.parentNode.rowIndex - 1;
+        let colClicked = event.cellIndex;
+        event.innerHTML = this.board[rowClicked][colClicked];
+        if (this.board[rowClicked][colClicked] === "X") {
+            this.showBombs();
         }
     }
+
+    showBombs() {
+        for (let bomb of this.bombsPositions.values()) {
+            bomb = bomb.split(" ");
+            let row = Number(bomb[0]);
+            let col = Number(bomb[1]);
+            let x = document.getElementById("tableId").rows[row+1].cells[col].innerText = this.board[row][col];
+        }
+    }
+
 }
 
 
-
-let game = new Game(9,9,10);
+let game = new Game(9, 9, 10);
 bombUpdateHtml();
 

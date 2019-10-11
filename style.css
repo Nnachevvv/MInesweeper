@@ -1,27 +1,31 @@
 
-.container{
+.container {
     max-width: 500px;
     margin: 0 auto;
     background-color: white;
     position: relative;
 
 }
-table{
+
+table {
     border-collapse: collapse;
 }
-table{
-    background-color : gainsboro;
+
+table {
+    background-color: gainsboro;
 }
 
 tr.main-header td {
     border: none;
 }
-td,tr,th{
-    width : 40px;
+
+td, tr, th {
+    width: 40px;
     height: 40px;
-    border : 1px solid grey;
+    border: 1px solid grey;
 
 }
+
 img {
     border: 1px solid grey;
     padding: 4px;
@@ -29,14 +33,14 @@ img {
     background-color: #c6c6c6;
 }
 
-.show-buttons   {
+.show-buttons {
     background-color: black;
     color: red;
     text-align: right;
     padding: 5px 5px 5px 20px;;
 }
 
-.cells{
+.cells {
     text-align: center;
     font-size: 20px;
 }
