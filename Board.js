@@ -15,7 +15,7 @@ let startCount = function counter() {
 
 function bombUpdateHtml()
 {
-    document.getElementById('bombsLeft').innerText = game.bombsLeft;
+    document.getElementById('bombsLeft').innerText = game.bombsPositions.size +"";
 
 }
 
@@ -42,12 +42,11 @@ class Game {
         this.row = row;
         this.col = col;
         this.bombs = bombs;
-        this.bombsLeft = bombs;
+        this.bombsPositions = new Set([]);
         this.defineBoard();
     };
-    get bombsLeftInClass()
-    {
-        return this.bombsLeft;
+    get bombsLeftInClass() {
+        return this.bombsPositions.size;
     }
     defineBoard() {
         this.board = new Array(this.row);
@@ -75,6 +74,7 @@ class Game {
                 pos = generateRandomPosition(this.row,this.col);
             }
             this.board[pos.row][pos.col] = "X";
+            this.bombsPositions.add(pos.row  +" " + pos.col);
         }
     };
 
@@ -138,9 +138,26 @@ class Game {
     {
             let col =   event.cellIndex;
             event.innerHTML = this.board[x][col];
-
+            if(this.board[x][col] === "X"){
+                this.showBombs();
+            }
     }
 
+
+    showBombs()
+    {
+        for(let bomb of  this.bombsPositions.values())
+        {
+                bomb = bomb.split(" ");
+                let row =   bomb[0];
+                let col = bomb[1];
+                //TODO to make this work;
+                document.getElementById("table").rows[row + 1].cells[col].innerHTML = this.board[row][col];
+
+
+        }
+
+    }
 
     print()
     {
