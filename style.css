@@ -28,7 +28,8 @@ td, tr, th {
 
 img {
     border: 1px solid grey;
-    padding: 4px;
+    margin-left :-16px;
+    padding:4px;
     margin-bottom: -5px;
     background-color: #c6c6c6;
 }

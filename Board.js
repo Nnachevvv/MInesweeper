@@ -1,4 +1,7 @@
 "use strict";
+let DEFAULT_ROWS = 8;
+let DEFAULT_COLS = 8;
+
 
 class StopWatch {
     constructor() {
@@ -11,7 +14,7 @@ class StopWatch {
         this.timerStarted = true;
         let seconds = 0;
         let el = document.getElementById("timer");
-           function  startInterval() {
+        function  startInterval() {
             seconds += 1;
             el.innerHTML = seconds+ " ";
         }
@@ -21,16 +24,19 @@ class StopWatch {
 
     stopInterval() {
         this.timerStarted = false;
-         clearInterval(this.cancel);
+        clearInterval(this.cancel);
     }
 
 }
 
 
+
 function bombUpdateHtml() {
-    document.getElementById('bombsLeft').innerText = game.bombsPositions.size + "";
+    document.getElementById('bombsLeft').innerText = game.bombsLeft + "";
 
 }
+
+
 
 
 class Position {
@@ -53,6 +59,8 @@ class Game {
         this.row = row;
         this.col = col;
         this.bombs = bombs;
+        this.bombsLeft = bombs;
+        this.isGameFinished = false;
         this.bombsPositions = new Set([]);
         this.defineBoard();
         this.stopwatch = new StopWatch();
@@ -144,16 +152,27 @@ class Game {
         }
     }
 
-    showBlock(event) {
-        let rowClicked = event.parentNode.rowIndex - 1;
-        let colClicked = event.cellIndex;
-        event.innerHTML = this.board[rowClicked][colClicked];
-        if (this.board[rowClicked][colClicked] === "X") {
-            this.stopwatch.stopInterval();
-            this.showBombs();
-        } else if (!this.stopwatch.timerStarted) {
+    showBlock(click,event) {
+        event.preventDefault();
+        if(!this.isGameFinished) {
+            let rowClicked = click.parentNode.rowIndex - 1;
+            let colClicked = click.cellIndex;
+            if(event.button ===  0) {
+                click.innerHTML = this.board[rowClicked][colClicked];
+                if (this.board[rowClicked][colClicked] === "X") {
+                    this.stopwatch.stopInterval();
+                    this.showBombs();
+                    this.isGameFinished = true;
+                } else if (!this.stopwatch.timerStarted) {
 
-            this.stopwatch.startTime();
+                    this.stopwatch.startTime();
+                }
+            }else{
+                click.innerHTML = '?';
+                --this.bombsLeft;
+                bombUpdateHtml();
+            }
+
         }
     }
 
@@ -167,8 +186,23 @@ class Game {
     }
 
 }
-
-
-let game = new Game(9, 9, 10);
+let game = new Game(DEFAULT_ROWS, DEFAULT_COLS, 10);
 bombUpdateHtml();
+
+function clearTable() {
+    for (let i = 0; i < DEFAULT_ROWS; i++) {
+        for (let j = 0; j < DEFAULT_COLS; j++) {
+            document.getElementById("tableId").rows[i + 1].cells[j].innerText = " ";
+        }
+    }
+    let el = document.getElementById("timer");
+    el.innerHTML = 0+" ";
+}
+function startGame()
+{
+    game.stopwatch.stopInterval();
+    game = new Game(8, 8, 10);
+    bombUpdateHtml();
+    clearTable();
+}
 
