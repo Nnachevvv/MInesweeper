@@ -14,10 +14,12 @@ class StopWatch {
         this.timerStarted = true;
         let seconds = 0;
         let el = document.getElementById("timer");
-        function  startInterval() {
+
+        function startInterval() {
             seconds += 1;
-            el.innerHTML = seconds+ " ";
+            el.innerHTML = seconds + " ";
         }
+
         this.cancel = setInterval(startInterval, 1000);
 
     }
@@ -30,13 +32,10 @@ class StopWatch {
 }
 
 
-
 function bombUpdateHtml() {
     document.getElementById('bombsLeft').innerText = game.bombsLeft + "";
 
 }
-
-
 
 
 class Position {
@@ -58,6 +57,7 @@ class Game {
     constructor(row, col, bombs) {
         this.row = row;
         this.col = col;
+        this.cellsToWin = row * col - bombs;
         this.bombs = bombs;
         this.bombsLeft = bombs;
         this.isGameFinished = false;
@@ -152,54 +152,99 @@ class Game {
         }
     }
 
-    showBlock(click,event) {
+    checkForWin() {
+
+        if (this.cellsToWin <= 0) {
+            this.showBombs('!');
+            document.getElementById("face").src = 'happy.gif';
+            return true;
+        }
+    }
+
+    gameOverClick()
+    {
+        this.stopwatch.stopInterval();
+        this.showBombs();
+        this.isGameFinished = true;
+        document.getElementById("face").src = 'sad.gif';
+    }
+
+    rightClickMouse(click)
+    {
+        if (click.innerHTML === '?') {
+
+            click.innerHTML = '!';
+            ++this.bombsLeft;
+            bombUpdateHtml();
+        }else if(click.innerHTML === '!')
+        {
+            click.innerHTML = null;
+        }
+        else {
+            click.innerHTML = '?';
+            --this.bombsLeft;
+            bombUpdateHtml();
+        }
+    }
+
+    showBlock(click, event) {
         event.preventDefault();
-        if(!this.isGameFinished) {
+        if (!this.isGameFinished) {
             let rowClicked = click.parentNode.rowIndex - 1;
             let colClicked = click.cellIndex;
-            if(event.button ===  0) {
+            click.style.pointerEvents = 'none';
+            if (event.button === 0) {
+                --this.cellsToWin;
                 click.innerHTML = this.board[rowClicked][colClicked];
+                click.style.backgroundColor = "rgb(169,169, 169)\n";
                 if (this.board[rowClicked][colClicked] === "X") {
-                    this.stopwatch.stopInterval();
-                    this.showBombs();
-                    this.isGameFinished = true;
+                    this.gameOverClick();
                 } else if (!this.stopwatch.timerStarted) {
-
                     this.stopwatch.startTime();
                 }
-            }else{
-                click.innerHTML = '?';
-                --this.bombsLeft;
-                bombUpdateHtml();
+            } else {
+                this.rightClickMouse(click);
+            }
+        }
+        if (this.checkForWin()) {
+            this.isGameFinished = true;
+        }
+    }
+
+    showBombs(symbol = 'X') {
+        for (let bomb of this.bombsPositions.values()) {
+            bomb = bomb.split(" ");
+            let row = Number(bomb[0]);
+            let col = Number(bomb[1]);
+            document.getElementById("tableId").rows[row + 1].cells[col].innerText = symbol;
+                if(symbol === 'X')
+            {
+                document.getElementById("tableId").rows[row + 1].cells[col].style.backgroundColor = "rgb(169,169, 169)\n";
             }
 
         }
     }
 
-    showBombs() {
-        for (let bomb of this.bombsPositions.values()) {
-            bomb = bomb.split(" ");
-            let row = Number(bomb[0]);
-            let col = Number(bomb[1]);
-            let x = document.getElementById("tableId").rows[row + 1].cells[col].innerText = this.board[row][col];
-        }
-    }
-
 }
+
 let game = new Game(DEFAULT_ROWS, DEFAULT_COLS, 10);
 bombUpdateHtml();
 
 function clearTable() {
     for (let i = 0; i < DEFAULT_ROWS; i++) {
         for (let j = 0; j < DEFAULT_COLS; j++) {
+
             document.getElementById("tableId").rows[i + 1].cells[j].innerText = " ";
+            document.getElementById("tableId").rows[i + 1].cells[j].style.backgroundColor = "gainsboro";
+            document.getElementById("tableId").rows[i + 1].cells[j].style.pointerEvents = 'auto';
         }
     }
     let el = document.getElementById("timer");
-    el.innerHTML = 0+" ";
+    el.innerHTML = 0 + " ";
 }
-function startGame()
-{
+
+function startGame() {
+    document.getElementById("face").src = 'bored.gif';
     game.stopwatch.stopInterval();
     game = new Game(8, 8, 10);
     bombUpdateHtml();
