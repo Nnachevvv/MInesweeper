@@ -3,33 +3,7 @@ let DEFAULT_ROWS = 8;
 let DEFAULT_COLS = 8;
 
 
-class StopWatch {
-    constructor() {
 
-        this.timerStarted = false;
-
-    }
-
-    startTime() {
-        this.timerStarted = true;
-        let seconds = 0;
-        let el = document.getElementById("timer");
-
-        function startInterval() {
-            seconds += 1;
-            el.innerHTML = seconds + " ";
-        }
-
-        this.cancel = setInterval(startInterval, 1000);
-
-    }
-
-    stopInterval() {
-        this.timerStarted = false;
-        clearInterval(this.cancel);
-    }
-
-}
 
 
 function bombUpdateHtml() {
@@ -38,18 +12,6 @@ function bombUpdateHtml() {
 }
 
 
-class Position {
-    constructor(x, y) {
-        this.row = x;
-        this.col = y;
-    }
-}
-
-function generateRandomPosition(maxCol, maxRow) {
-    let x = Math.floor(Math.random() * maxCol);
-    let y = Math.floor(Math.random() * maxRow);
-    return new Position(x, y);
-}
 
 
 class Game {
@@ -156,7 +118,7 @@ class Game {
 
         if (this.cellsToWin <= 0) {
             this.showBombs('!');
-            document.getElementById("face").src = 'happy.gif';
+            document.getElementById("face").src = 'images/happy.gif';
             return true;
         }
     }
@@ -166,7 +128,7 @@ class Game {
         this.stopwatch.stopInterval();
         this.showBombs();
         this.isGameFinished = true;
-        document.getElementById("face").src = 'sad.gif';
+        document.getElementById("face").src = 'images/sad.gif';
     }
 
     rightClickMouse(click)
@@ -197,6 +159,9 @@ class Game {
                 --this.cellsToWin;
                 click.innerHTML = this.board[rowClicked][colClicked];
                 click.style.backgroundColor = "rgb(169,169, 169)\n";
+                if (this.board[rowClicked][colClicked] === 0) {
+                    this.clearZeroCells(rowClicked,colClicked);
+                }
                 if (this.board[rowClicked][colClicked] === "X") {
                     this.gameOverClick();
                 } else if (!this.stopwatch.timerStarted) {
@@ -225,29 +190,91 @@ class Game {
         }
     }
 
+    clearTable() {
+        for (let i = 0; i < this.row; i++) {
+            for (let j = 0; j < this.col; j++) {
+
+                document.getElementById("tableId").rows[i + 1].cells[j].innerText = " ";
+                document.getElementById("tableId").rows[i + 1].cells[j].style.backgroundColor = "gainsboro";
+                document.getElementById("tableId").rows[i + 1].cells[j].style.pointerEvents = 'auto';
+            }
+        }
+        let el = document.getElementById("timer");
+        el.innerHTML = 0 + " ";
+    }
+
+    startGame() {
+        document.getElementById("face").src = 'images/bored.gif';
+        game.stopwatch.stopInterval();
+        game = new Game(8, 8, 10);
+        bombUpdateHtml();
+        this.clearTable();
+    }
+
+    IsTableCellEmpty(row , col)
+    {
+        return document.getElementById("tableId").rows[row + 1].cells[col];
+    }
+
+    clearZeroCells(row , col)
+    {
+        if(row < 0 || row >= this.row  || col < 0 || col >= this.col)
+        {
+            return;
+        }
+        document.getElementById("tableId").rows[row+1].cells[col].innerText = this.board[row][col];
+
+        if(this.board[row][col] !== 0)
+        {
+            return;
+        }
+
+        if(row - 1 >= 0 && this.IsTableCellEmpty(row - 1,col) ){
+            this.clearZeroCells(row - 1 , col)
+        }
+
+        if(col - 1 >= 0 && this.IsTableCellEmpty(row,col-1) )
+        {
+            this.clearZeroCells(row,col-1);
+        }
+
+
+        if(row + 1 < this.row && this.IsTableCellEmpty(row + 1))
+        {
+            this.clearZeroCells(row + 1,col);
+        }
+
+        if(col + 1 < this.col && this.IsTableCellEmpty(row,col+1))
+        {
+            this.clearZeroCells(row ,col+1);
+        }
+
+        if(row - 1 >= 0 && col - 1 >= 0 && this.IsTableCellEmpty(row - 1,col - 1))
+        {
+            this.clearZeroCells(row - 1 , col - 1 );
+        }
+
+        if(row + 1 <= this.row && col + 1 <= this.col && this.IsTableCellEmpty(row + 1,col + 1))
+        {
+            this.clearZeroCells(row + 1 , col + 1 );
+        }
+
+        if(row + 1 < this.row && col - 1 >=  0  && this.IsTableCellEmpty(row+1,col-1))
+        {
+            this.clearZeroCells(row + 1 , col - 1 );
+        }
+
+        if(row - 1 >= 0  && col + 1 < this.col && this.IsTableCellEmpty(row-1,col+1))
+        {
+            this.clearZeroCells(row - 1 , col + 1 );
+        }
+    }
+
 }
 
 let game = new Game(DEFAULT_ROWS, DEFAULT_COLS, 10);
 bombUpdateHtml();
 
-function clearTable() {
-    for (let i = 0; i < DEFAULT_ROWS; i++) {
-        for (let j = 0; j < DEFAULT_COLS; j++) {
 
-            document.getElementById("tableId").rows[i + 1].cells[j].innerText = " ";
-            document.getElementById("tableId").rows[i + 1].cells[j].style.backgroundColor = "gainsboro";
-            document.getElementById("tableId").rows[i + 1].cells[j].style.pointerEvents = 'auto';
-        }
-    }
-    let el = document.getElementById("timer");
-    el.innerHTML = 0 + " ";
-}
 
-function startGame() {
-    document.getElementById("face").src = 'bored.gif';
-    game.stopwatch.stopInterval();
-    game = new Game(8, 8, 10);
-    bombUpdateHtml();
-    clearTable();
-}
 
