@@ -133,17 +133,16 @@ class Game {
 
     rightClickMouse(click)
     {
-        if (click.innerHTML === '?') {
-
-            click.innerHTML = '!';
+        if (click.innerText === '?') {
+            click.innerText = '!';
             ++this.bombsLeft;
             bombUpdateHtml();
-        }else if(click.innerHTML === '!')
+        }else if(click.innerText === '!')
         {
-            click.innerHTML = null;
+            click.innerText = null;
         }
         else {
-            click.innerHTML = '?';
+            click.innerText = '?';
             --this.bombsLeft;
             bombUpdateHtml();
         }
@@ -154,13 +153,14 @@ class Game {
         if (!this.isGameFinished) {
             let rowClicked = click.parentNode.rowIndex - 1;
             let colClicked = click.cellIndex;
-            click.style.pointerEvents = 'none';
             if (event.button === 0) {
-                --this.cellsToWin;
-                click.innerHTML = this.board[rowClicked][colClicked];
-                click.style.backgroundColor = "rgb(169,169, 169)\n";
+                click.style.pointerEvents = 'none';
                 if (this.board[rowClicked][colClicked] === 0) {
                     this.clearZeroCells(rowClicked,colClicked);
+                }else{
+                    --this.cellsToWin;
+                    click.innerText = this.board[rowClicked][colClicked];
+                    click.style.backgroundColor = "rgb(169,169, 169)\n";
                 }
                 if (this.board[rowClicked][colClicked] === "X") {
                     this.gameOverClick();
@@ -173,6 +173,7 @@ class Game {
         }
         if (this.checkForWin()) {
             this.isGameFinished = true;
+            this.stopwatch.stopInterval();
         }
     }
 
@@ -200,7 +201,7 @@ class Game {
             }
         }
         let el = document.getElementById("timer");
-        el.innerHTML = 0 + " ";
+        el.innerText = 0 + " ";
     }
 
     startGame() {
@@ -213,7 +214,7 @@ class Game {
 
     IsTableCellEmpty(row , col)
     {
-        return document.getElementById("tableId").rows[row + 1].cells[col];
+        return !document.getElementById("tableId").rows[row + 1].cells[col].innerText;
     }
 
     clearZeroCells(row , col)
@@ -223,7 +224,8 @@ class Game {
             return;
         }
         document.getElementById("tableId").rows[row+1].cells[col].innerText = this.board[row][col];
-
+        document.getElementById("tableId").rows[row+1].cells[col].style.backgroundColor = "rgb(169,169, 169)\n";
+        --this.cellsToWin;
         if(this.board[row][col] !== 0)
         {
             return;
@@ -239,7 +241,7 @@ class Game {
         }
 
 
-        if(row + 1 < this.row && this.IsTableCellEmpty(row + 1))
+        if(row + 1 < this.row && this.IsTableCellEmpty(row + 1,col))
         {
             this.clearZeroCells(row + 1,col);
         }
@@ -254,7 +256,7 @@ class Game {
             this.clearZeroCells(row - 1 , col - 1 );
         }
 
-        if(row + 1 <= this.row && col + 1 <= this.col && this.IsTableCellEmpty(row + 1,col + 1))
+        if(row + 1 < this.row && col + 1 < this.col && this.IsTableCellEmpty(row + 1,col + 1))
         {
             this.clearZeroCells(row + 1 , col + 1 );
         }
