@@ -12,7 +12,7 @@ table {
 }
 
 table {
-    background-color: gainsboro;
+    background-color: #cccccc;
 }
 
 tr.main-header td {
@@ -22,7 +22,7 @@ tr.main-header td {
 td, tr, th {
     width: 40px;
     height: 40px;
-    border: 1px solid grey;
+    border: 2px solid grey;
 
 }
 

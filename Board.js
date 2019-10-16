@@ -38,10 +38,11 @@ class Game {
     clearTable() {
         for (let i = 0; i < this.row; i++) {
             for (let j = 0; j < this.col; j++) {
-
-                document.getElementById("tableId").rows[i + 1].cells[j].innerText = " ";
-                document.getElementById("tableId").rows[i + 1].cells[j].style.backgroundColor = "gainsboro";
-                document.getElementById("tableId").rows[i + 1].cells[j].style.pointerEvents = 'auto';
+                let cell =  document.getElementById("tableId").rows[i + 1].cells[j];
+                cell.innerText = " ";
+                cell.style.backgroundColor = "#cccccc";
+                cell.style.pointerEvents = 'auto';
+                cell.style.color = 'black';
             }
         }
         let el = document.getElementById("timer");
@@ -166,17 +167,40 @@ class Game {
         }
     };
 
-    leftClickMouse(click)
+    colorOfCellText(rowClicked , colClicked, cell)
     {
-        click.style.pointerEvents = 'none';
-        let rowClicked = click.parentNode.rowIndex - 1;
-        let colClicked = click.cellIndex;
+        cell.style.pointerEvents = 'none';
+        cell.innerText = this.board[rowClicked][colClicked];
+        cell.style.backgroundColor = "#bbbbbb";
+        --this.cellsToWin;
+        let valueCell = this.board[rowClicked][colClicked];
+        if(valueCell === 1)
+        {
+            cell.style.color = "#3333cc"
+        }
+        else if(valueCell === 2)
+        {
+            cell.style.color = "#006600";
+        }
+        else if (valueCell === 3)
+        {
+            cell.style.color = '#cc0000';
+        }
+        else if (valueCell === 4)
+        {
+            cell.style.color = '#660066';
+        }
+
+    }
+
+    leftClickMouse(cell)
+    {
+        let rowClicked = cell.parentNode.rowIndex - 1;
+        let colClicked = cell.cellIndex;
         if (this.board[rowClicked][colClicked] === 0) {
             this.clearZeroCells(rowClicked,colClicked);
         }else if(this.board[rowClicked][colClicked] !== 'X'){
-            --this.cellsToWin;
-            click.innerText = this.board[rowClicked][colClicked];
-            click.style.backgroundColor = "rgb(169,169, 169)\n";
+            this.colorOfCellText(rowClicked,colClicked,cell);
         }
         if (this.board[rowClicked][colClicked] === "X") {
             this.gameOverClick();
@@ -187,14 +211,14 @@ class Game {
 
 
 
-    showCell(click, event) {
-        event.preventDefault();
+    showCell(cell, cellEvent) {
+        cellEvent.preventDefault();
         if (!this.isGameFinished) {
 
-            if (event.button === 0) {
-                this.leftClickMouse(click);
+            if (cellEvent.button === 0) {
+                this.leftClickMouse(cell);
             } else {
-                this.rightClickMouse(click);
+                this.rightClickMouse(cell);
             }
         }
         if (this.checkForWin()) {
@@ -209,11 +233,10 @@ class Game {
             bomb = bomb.split(" ");
             let row = Number(bomb[0]);
             let col = Number(bomb[1]);
-            let element = document.getElementById("tableId").rows[row + 1].cells[col];
-            element.innerText = symbol;
-                if(symbol === 'X')
-            {
-                element.style.backgroundColor = "rgb(169,169, 169)\n";
+            let cell = document.getElementById("tableId").rows[row + 1].cells[col];
+            cell.innerText = symbol;
+                if(symbol === 'X') {
+                this.colorOfCellText(row,col,cell);
             }
 
         }
@@ -233,9 +256,13 @@ class Game {
         {
             return;
         }
-        document.getElementById("tableId").rows[row+1].cells[col].innerText = this.board[row][col];
-        document.getElementById("tableId").rows[row+1].cells[col].style.backgroundColor = "rgb(169,169, 169)\n";
-        --this.cellsToWin;
+        let cell = document.getElementById("tableId").rows[row+1].cells[col];
+
+        cell.innerText = this.board[row][col];
+        cell.style.backgroundColor = "#bbbbbb";
+        this.colorOfCellText(row,col,cell);
+       --this.cellsToWin;
+       //TO DO
         if(this.board[row][col] !== 0)
         {
             return;
@@ -280,6 +307,7 @@ class Game {
         {
             this.clearZeroCells(row - 1 , col + 1 );
         }
+
     }
 
 }
