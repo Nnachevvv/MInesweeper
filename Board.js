@@ -134,12 +134,12 @@ class Game {
         }
     };
 
-    checkForWin() {
-        if (this.cellsToWin <= 0) {
+
+    win() {
             this.markBombs('!');
             document.getElementById("face").src = 'images/happy.gif';
-            return true;
-        }
+            this.isGameFinished = true;
+            this.stopwatch.stopInterval();
     };
 
     gameOverClick()
@@ -167,8 +167,9 @@ class Game {
         }
     };
 
-    colorOfCellText(rowClicked , colClicked, cell)
+    colorOfCellText(rowClicked , colClicked)
     {
+        let cell = document.getElementById("tableId").rows[rowClicked + 1].cells[colClicked];
         cell.style.pointerEvents = 'none';
         cell.innerText = this.board[rowClicked][colClicked];
         cell.style.backgroundColor = "#bbbbbb";
@@ -190,6 +191,14 @@ class Game {
         {
             cell.style.color = '#660066';
         }
+        else if(valueCell === 5 )
+        {
+            cell.style.color = '#A52A2A'
+        }
+        else if(valueCell ===0)
+        {
+            cell.innerText = " ";
+        }
 
     }
 
@@ -198,9 +207,11 @@ class Game {
         let rowClicked = cell.parentNode.rowIndex - 1;
         let colClicked = cell.cellIndex;
         if (this.board[rowClicked][colClicked] === 0) {
-            this.clearZeroCells(rowClicked,colClicked);
+            let posBombs = [];
+            this.clearZeroCells(rowClicked,colClicked,posBombs);
+            this.zeroCellsColor(posBombs);
         }else if(this.board[rowClicked][colClicked] !== 'X'){
-            this.colorOfCellText(rowClicked,colClicked,cell);
+            this.colorOfCellText(rowClicked,colClicked);
         }
         if (this.board[rowClicked][colClicked] === "X") {
             this.gameOverClick();
@@ -209,7 +220,16 @@ class Game {
         }
     };
 
-
+     zeroCellsColor(zeroPosBombs)
+    {
+        for(let bomb of zeroPosBombs)
+        {
+            bomb = bomb.split(" ");
+            let row = Number(bomb[0]);
+            let col = Number(bomb[1]);
+            this.colorOfCellText(row,col);
+        }
+    }
 
     showCell(cell, cellEvent) {
         cellEvent.preventDefault();
@@ -221,10 +241,8 @@ class Game {
                 this.rightClickMouse(cell);
             }
         }
-        if (this.checkForWin()) {
-            this.isGameFinished = true;
-            this.bombsLeft = 0;
-            this.stopwatch.stopInterval();
+        if (this.cellsToWin <= 0  && this.isGameFinished === false) {
+            this.win();
         }
     };
 
@@ -236,7 +254,7 @@ class Game {
             let cell = document.getElementById("tableId").rows[row + 1].cells[col];
             cell.innerText = symbol;
                 if(symbol === 'X') {
-                this.colorOfCellText(row,col,cell);
+                this.colorOfCellText(row,col);
             }
 
         }
@@ -250,62 +268,59 @@ class Game {
         return !document.getElementById("tableId").rows[row + 1].cells[col].innerText;
     }
 
-    clearZeroCells(row , col)
+    clearZeroCells(row , col , zeroPosBombs)
     {
         if(row < 0 || row >= this.row  || col < 0 || col >= this.col)
         {
             return;
         }
-        let cell = document.getElementById("tableId").rows[row+1].cells[col];
 
-        cell.innerText = this.board[row][col];
-        cell.style.backgroundColor = "#bbbbbb";
-        this.colorOfCellText(row,col,cell);
-       --this.cellsToWin;
-       //TO DO
         if(this.board[row][col] !== 0)
         {
+            this.colorOfCellText(row,col);
             return;
+        }else{
+            document.getElementById("tableId").rows[row+1].cells[col].innerText = "0";
         }
-
+        zeroPosBombs.push(row + " " + col);
         if(row - 1 >= 0 && this.IsTableCellEmpty(row - 1,col) ){
-            this.clearZeroCells(row - 1 , col)
+            this.clearZeroCells(row - 1 , col,zeroPosBombs)
         }
 
         if(col - 1 >= 0 && this.IsTableCellEmpty(row,col-1) )
         {
-            this.clearZeroCells(row,col-1);
+            this.clearZeroCells(row,col-1,zeroPosBombs);
         }
 
 
         if(row + 1 < this.row && this.IsTableCellEmpty(row + 1,col))
         {
-            this.clearZeroCells(row + 1,col);
+            this.clearZeroCells(row + 1,col,zeroPosBombs);
         }
 
         if(col + 1 < this.col && this.IsTableCellEmpty(row,col+1))
         {
-            this.clearZeroCells(row ,col+1);
+            this.clearZeroCells(row ,col+1,zeroPosBombs);
         }
 
         if(row - 1 >= 0 && col - 1 >= 0 && this.IsTableCellEmpty(row - 1,col - 1))
         {
-            this.clearZeroCells(row - 1 , col - 1 );
+            this.clearZeroCells(row - 1 , col - 1,zeroPosBombs );
         }
 
         if(row + 1 < this.row && col + 1 < this.col && this.IsTableCellEmpty(row + 1,col + 1))
         {
-            this.clearZeroCells(row + 1 , col + 1 );
+            this.clearZeroCells(row + 1 , col + 1 ,zeroPosBombs);
         }
 
         if(row + 1 < this.row && col - 1 >=  0  && this.IsTableCellEmpty(row+1,col-1))
         {
-            this.clearZeroCells(row + 1 , col - 1 );
+            this.clearZeroCells(row + 1 , col - 1 ,zeroPosBombs);
         }
 
         if(row - 1 >= 0  && col + 1 < this.col && this.IsTableCellEmpty(row-1,col+1))
         {
-            this.clearZeroCells(row - 1 , col + 1 );
+            this.clearZeroCells(row - 1 , col + 1 ,zeroPosBombs);
         }
 
     }
