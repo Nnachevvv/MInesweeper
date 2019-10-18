@@ -6,28 +6,15 @@
     <title>Minesweeper</title>
 
 </head>
-<body>
+<body onload="changeVariables(16,16,40)">
 <div class="container">
     <main>
 
         <table id="tableId" oncontextmenu="return false">
             <tr class="main-header">
-                <td></td>
-                <td><span class="show-buttons" id="bombsLeft"></span></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><img alt="none" id="face" onclick="game.startGame()" src="images/bored.gif"></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><span class="show-buttons" id="timer">0</span></td>
-                <td></td>
+                <td colspan="16"><span class="show-buttons" id="bombsLeft"></span>
+                <img alt="none" id="face" onclick="game.startGame()" src="images/bored.gif">
+                <span class="show-buttons" id="timer">0</span></td>
 
             </tr>
 

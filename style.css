@@ -1,6 +1,6 @@
 
 .container {
-    max-width: 500px;
+    max-width: 800px;
     margin: 0 auto;
     background-color: white;
     position: relative;
@@ -17,31 +17,47 @@ table {
 
 tr.main-header td {
     border: none;
+    text-align: center;
+    vertical-align: middle;
 }
 
 td, tr, th {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     border: 2px solid grey;
 
 }
 
 img {
     border: 1px solid grey;
-    margin-left :-16px;
-    padding:4px;
-    margin-bottom: -5px;
+    width: 30px;
+    height: 30px;
+    margin-top: 2px;
     background-color: #c6c6c6;
 }
 
-.show-buttons {
+#timer{
+    float :right;
+    margin-right: 20px;
+}
+#bombsLeft{
+    float: left;
+    margin-left: 20px;
+}
+
+td span {
+    display: inline-block;
+    margin-top: 5px;
     background-color: black;
     color: red;
     text-align: right;
-    padding: 5px 5px 5px 20px;
+    width: 42px;
+    height: 25px;
+    font-size: 21px;
 }
 
 .cells {
     text-align: center;
-    font-size: 20px;
+    font-size: 15px;
+    font-weight: bold;
 }

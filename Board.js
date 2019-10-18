@@ -1,9 +1,5 @@
 "use strict";
 
-
-
-
-
 class Game {
 
     constructor(row, col, bombs) {
@@ -17,38 +13,19 @@ class Game {
         this.stopwatch = new StopWatch();
     };
 
-    startGame(ROWS =  8, COLS = 8, BOMBS = 10 ) {
+    startGame()  {
         document.getElementById("face").src = 'images/bored.gif';
         game.stopwatch.stopInterval();
-        game = new Game(ROWS, COLS,  BOMBS);
+        this.clearTable();
+        game = new Game(row, col,  bomb);
     }
 
     defineBoard() {
-
-        let that = this;
-
-       function setBombs() {
-            for (let i = 0; i < this.bombsLeft; i++) {
-
-                let pos = generateRandomPosition(this.row, this.col);
-
-                while (that.ifOccupied(pos)) {
-                    pos = generateRandomPosition(this.row, this.col);
-                }
-
-                this.board[pos.row][pos.col] = "X";
-                this.bombsPositions.add(pos.row + " " + pos.col);
-
-            }
-        }
-
-
-        this.clearTable();
         this.board = new Array(this.row);
-        for (let i = 0; i < this.col; i++) {
+        for (let i = 0; i < this.row; i++) {
             this.board[i] = new Array(this.col);
         }
-        setBombs();
+        this.setBombs();
         this.describeCells();
         this.bombUpdateHtml();
     };
@@ -70,7 +47,7 @@ class Game {
 
 
 
-     bombUpdateHtml() {
+    bombUpdateHtml() {
         document.getElementById('bombsLeft').innerText = this.bombsLeft + "";
     }
 
@@ -82,7 +59,20 @@ class Game {
         return this.board[i][j] === "X";
     }
 
+    setBombs() {
+        for (let i = 0; i < this.bombsLeft; i++) {
 
+            let pos = generateRandomPosition(this.row, this.col);
+
+            while (this.ifOccupied(pos)) {
+                pos = generateRandomPosition(this.row, this.col);
+            }
+
+            this.board[pos.row][pos.col] = "X";
+            this.bombsPositions.add(pos.row + " " + pos.col);
+
+        }
+    };
 
     countOfTopBombs(i, j) {
         let bombs = 0;
@@ -123,7 +113,7 @@ class Game {
             ++bombs;
         }
 
-        if (j + 1 >= 0 && this.isBombPlanned(i, j + 1)) {
+        if (j + 1 < this.col && this.isBombPlanned(i, j + 1)) {
             ++bombs;
         }
 
@@ -141,25 +131,36 @@ class Game {
     };
 
 
+    win() {
+        this.markBombs('!');
+        document.getElementById("face").src = 'images/happy.gif';
+        this.isGameFinished = true;
+        this.stopwatch.stopInterval();
+    };
 
-
-
+    gameOverClick()
+    {
+        this.stopwatch.stopInterval();
+        this.markBombs();
+        this.isGameFinished = true;
+        document.getElementById("face").src = 'images/sad.gif';
+    };
 
     rightClickMouse(click)
     {
-        if (click.innerText === '?') {
-            click.innerText = '!';
+        if (click.innerText === '!') {
+            click.innerText = '?';
             ++this.bombsLeft;
-            this.bombUpdateHtml();
-        }else if(click.innerText === '!')
+        }else if(click.innerText === '?')
         {
             click.innerText = null;
         }
         else {
-            click.innerText = '?';
             --this.bombsLeft;
-            this.bombUpdateHtml();
-        }
+            click.innerText = '!';
+            }
+        this.bombUpdateHtml();
+
     };
 
     colorOfCellText(rowClicked , colClicked)
@@ -197,58 +198,48 @@ class Game {
 
     }
 
+     checkForExclamation(cell)
+    {
+        if(cell.innerText === '!')
+        {
+            ++this.bombsLeft;
+            this.bombUpdateHtml();
+        }
+    };
+
     leftClickMouse(cell)
     {
-        let that = this;
-
-       function gameOverClick()
-        {
-           that.stopwatch.stopInterval();
-           that.markBombs();
-           that.isGameFinished = true;
-           document.getElementById("face").src = 'images/sad.gif';
-        }
-
-       function zeroCellsColor(zeroPosBombs)
-        {
-            for(let bomb of zeroPosBombs)
-            {
-                bomb = bomb.split(" ");
-                let row = Number(bomb[0]);
-                let col = Number(bomb[1]);
-                that.colorOfCellText(row,col);
-            }
-        }
-
-
         let rowClicked = cell.parentNode.rowIndex - 1;
         let colClicked = cell.cellIndex;
         if (this.board[rowClicked][colClicked] === 0) {
             let posBombs = [];
             this.clearZeroCells(rowClicked,colClicked,posBombs);
-            zeroCellsColor(posBombs);
+            this.zeroCellsColor(posBombs);
+            this.checkForExclamation(cell);
+
         }else if(this.board[rowClicked][colClicked] !== 'X'){
+            this.checkForExclamation(cell);
             this.colorOfCellText(rowClicked,colClicked);
         }
         if (this.board[rowClicked][colClicked] === "X") {
-            gameOverClick();
+            this.gameOverClick();
         } else if (!this.stopwatch.timerStarted) {
             this.stopwatch.startTime();
         }
     };
 
-
+    zeroCellsColor(zeroPosBombs)
+    {
+        for(let bomb of zeroPosBombs)
+        {
+            bomb = bomb.split(" ");
+            let row = Number(bomb[0]);
+            let col = Number(bomb[1]);
+            this.colorOfCellText(row,col);
+        }
+    }
 
     showCell(cell, cellEvent) {
-         let that = this;
-
-         function win() {
-            that.markBombs('!');
-            document.getElementById("face").src = 'images/happy.gif';
-            that.isGameFinished = true;
-            that.stopwatch.stopInterval();
-            }
-
         cellEvent.preventDefault();
         if (!this.isGameFinished) {
 
@@ -259,10 +250,9 @@ class Game {
             }
         }
         if (this.cellsToWin <= 0  && this.isGameFinished === false) {
-           win();
+            this.win();
         }
     };
-
 
     markBombs(symbol = 'X') {
         for (let bomb of this.bombsPositions.values()) {
@@ -271,7 +261,7 @@ class Game {
             let col = Number(bomb[1]);
             let cell = document.getElementById("tableId").rows[row + 1].cells[col];
             cell.innerText = symbol;
-                if(symbol === 'X') {
+            if(symbol === 'X') {
                 this.colorOfCellText(row,col);
             }
 
@@ -280,17 +270,14 @@ class Game {
 
 
 
+
+    IsTableCellEmpty(row , col)
+    {
+        return !document.getElementById("tableId").rows[row + 1].cells[col].innerText;
+    }
+
     clearZeroCells(row , col , zeroPosBombs)
     {
-
-       /**
-        * @return {boolean}
-        */
-       function IsTableCellEmpty(row , col)
-        {
-            return !document.getElementById("tableId").rows[row + 1].cells[col].innerText;
-        }
-
         if(row < 0 || row >= this.row  || col < 0 || col >= this.col)
         {
             return;
@@ -304,42 +291,42 @@ class Game {
             document.getElementById("tableId").rows[row+1].cells[col].innerText = "0";
         }
         zeroPosBombs.push(row + " " + col);
-        if(row - 1 >= 0 && IsTableCellEmpty(row - 1,col) ){
+        if(row - 1 >= 0 && this.IsTableCellEmpty(row - 1,col) ){
             this.clearZeroCells(row - 1 , col,zeroPosBombs)
         }
 
-        if(col - 1 >= 0 && IsTableCellEmpty(row,col-1) )
+        if(col - 1 >= 0 && this.IsTableCellEmpty(row,col-1) )
         {
             this.clearZeroCells(row,col-1,zeroPosBombs);
         }
 
 
-        if(row + 1 < this.row && IsTableCellEmpty(row + 1,col))
+        if(row + 1 < this.row && this.IsTableCellEmpty(row + 1,col))
         {
             this.clearZeroCells(row + 1,col,zeroPosBombs);
         }
 
-        if(col + 1 < this.col && IsTableCellEmpty(row,col+1))
+        if(col + 1 < this.col && this.IsTableCellEmpty(row,col+1))
         {
             this.clearZeroCells(row ,col+1,zeroPosBombs);
         }
 
-        if(row - 1 >= 0 && col - 1 >= 0 && IsTableCellEmpty(row - 1,col - 1))
+        if(row - 1 >= 0 && col - 1 >= 0 && this.IsTableCellEmpty(row - 1,col - 1))
         {
             this.clearZeroCells(row - 1 , col - 1,zeroPosBombs );
         }
 
-        if(row + 1 < this.row && col + 1 < this.col && IsTableCellEmpty(row + 1,col + 1))
+        if(row + 1 < this.row && col + 1 < this.col && this.IsTableCellEmpty(row + 1,col + 1))
         {
             this.clearZeroCells(row + 1 , col + 1 ,zeroPosBombs);
         }
 
-        if(row + 1 < this.row && col - 1 >=  0  && IsTableCellEmpty(row+1,col-1))
+        if(row + 1 < this.row && col - 1 >=  0  && this.IsTableCellEmpty(row+1,col-1))
         {
             this.clearZeroCells(row + 1 , col - 1 ,zeroPosBombs);
         }
 
-        if(row - 1 >= 0  && col + 1 < this.col && IsTableCellEmpty(row-1,col+1))
+        if(row - 1 >= 0  && col + 1 < this.col && this.IsTableCellEmpty(row-1,col+1))
         {
             this.clearZeroCells(row - 1 , col + 1 ,zeroPosBombs);
         }
@@ -348,8 +335,17 @@ class Game {
 
 }
 
-let game = new Game(8, 8, 10);
+let game ;
+let row = 8;
+let col = 8;
+let bomb = 10;
 
 
+function  changeVariables(_row = 8, _col = 8 , _bombs= 10) {
+    row = _row;
+    col = _col;
+    bomb = _bombs;
+    game = new Game(_row,_col,_bombs);
+}
 
 
