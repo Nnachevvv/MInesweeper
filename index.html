@@ -7,7 +7,7 @@
     <title>Minesweeper</title>
 
 </head>
-<body >
+<body onload = "init()" >
 <div class="container" >
     <main>
 
@@ -106,8 +106,16 @@
                 <td onmousedown="game.showCell(this,event)"></td>
             </tr>
 
-
+            <tr>
+                <td colspan="8" class = "menu">
+                    <a href="index.html"><span id = "easy">Easy</span></a>
+                    <a href="intermediate.html" id ="inter"><span id = "intermediate">Intermediate</span></a>
+                    <a href="expert.html"><span id = "expert">Expert</span></a>
+                </td>
+            </tr>
         </table>
+
+
     </main>
 </div >
 <script src="Position.js" type="text/javascript"></script>

@@ -1,24 +1,19 @@
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: white;
-    position: relative;
-
+body{
+    background-color: #AAAAAA
 }
+
 
 table {
     border-collapse: collapse;
-}
-
-table {
     background-color: #cccccc;
+    margin-left: auto;
+    margin-right: auto;
+
 }
 
 tr.main-header td {
     border: none;
     text-align: center;
-    vertical-align: middle;
 }
 
 td, tr, th {
@@ -34,18 +29,12 @@ img {
     height: 30px;
     margin-top: 2px;
     background-color: #c6c6c6;
+    cursor: pointer;
+
 }
 
-#timer{
-    float :right;
-    margin-right: 20px;
-}
-#bombsLeft{
-    float: left;
-    margin-left: 20px;
-}
 
-td span {
+.main-header span {
     display: inline-block;
     margin-top: 5px;
     background-color: black;
@@ -60,4 +49,32 @@ td span {
     text-align: center;
     font-size: 15px;
     font-weight: bold;
+    cursor: pointer;
+
 }
+a{
+    color: inherit;
+    text-decoration: none;
+
+}
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+
+}
+
+#timer , #expert{
+    float :right;
+    margin-right: 10px;
+}
+#bombsLeft,#easy{
+    float: left;
+    margin-left: 10px;
+}
+
+
+.menu {
+    text-align: center;
+    color: #98810C;
+}
+

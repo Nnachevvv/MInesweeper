@@ -6,7 +6,7 @@
     <title>Minesweeper</title>
 
 </head>
-<body onload="changeVariables(16,16,40)">
+<body onload="init(16,16,40)">
 <div class="container">
     <main>
 
@@ -329,7 +329,13 @@
                 <td onmousedown="game.showCell(this,event)"></td>
                 <td onmousedown="game.showCell(this,event)"></td>
             </tr>
-
+            <tr>
+                <td colspan="16" class = "menu">
+                    <a href="index.html"><span id = "easy">Easy</span></a>
+                    <a href="intermediate.html" id ="inter"><span id = "intermediate">Intermediate</span></a>
+                    <a href="expert.html"><span id = "expert">Expert</span></a>
+                </td>
+            </tr>
 
         </table>
     </main>

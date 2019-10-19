@@ -39,6 +39,7 @@ class Game {
                 cell.style.backgroundColor = "#cccccc";
                 cell.style.pointerEvents = 'auto';
                 cell.style.color = 'black';
+                cell.style.backgroundImage = 'none';
             }
         }
         let el = document.getElementById("timer");
@@ -223,6 +224,7 @@ class Game {
         }
         if (this.board[rowClicked][colClicked] === "X") {
             this.gameOverClick();
+            cell.style.backgroundImage = "url(images/triggeredBomb.png)";
         } else if (!this.stopwatch.timerStarted) {
             this.stopwatch.startTime();
         }
@@ -260,9 +262,11 @@ class Game {
             let row = Number(bomb[0]);
             let col = Number(bomb[1]);
             let cell = document.getElementById("tableId").rows[row + 1].cells[col];
-            cell.innerText = symbol;
             if(symbol === 'X') {
-                this.colorOfCellText(row,col);
+                cell.style.backgroundImage = 'url(images/bomb.gif)';
+
+            }else{
+                cell.innerText = symbol;
             }
 
         }
@@ -341,7 +345,7 @@ let col = 8;
 let bomb = 10;
 
 
-function  changeVariables(_row = 8, _col = 8 , _bombs= 10) {
+function  init(_row = 8, _col = 8 , _bombs= 10) {
     row = _row;
     col = _col;
     bomb = _bombs;
