@@ -4,5 +4,4 @@ This is classic Minesweeper game.It's have bomb counter and timer and also you c
 ## How to use
 Clone project and open index.html in modern web browser.
 
-
-###Demo: https://nnachevvv.github.io/Minesweeper/
+Demo: https://nnachevvv.github.io/Minesweeper/
